@@ -4,14 +4,8 @@ import {
   ShieldCheck, 
   Bookmark, 
   MapPin, 
-  Flame, 
   ArrowUpRight, 
-  Clock, 
-  Sparkles, 
-  Utensils, 
-  Shirt, 
-  BookOpen,
-  Sparkle
+  Clock 
 } from 'lucide-react';
 
 export default function ItemCard({ item }) {
@@ -37,32 +31,31 @@ export default function ItemCard({ item }) {
   return (
     <div
       onClick={handleCardClick}
-      className="glass-card rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 flex flex-col justify-between cursor-pointer group relative overflow-hidden text-left"
+      className="bg-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 border border-[#E8E3DA] hover:border-[#C85A32] shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer group text-left"
     >
       {/* Top Media Container */}
-      <div className="relative aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden mb-3.5 bg-[#121318]">
+      <div className="relative aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden mb-3.5 bg-[#F3EFEA]">
         <img
           src={item.image}
           alt={item.title}
           loading="lazy"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0C]/90 via-[#0A0A0C]/20 to-transparent"></div>
 
         {/* Top Floating Badges */}
         <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
           {/* Ethnicity Pill */}
-          <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-semibold text-[#D4AF37] tracking-wider uppercase">
+          <span className="px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-sm border border-[#E8E3DA] text-[10px] font-bold text-[#18181B] tracking-wider uppercase shadow-xs">
             {item.ethnicity}
           </span>
 
-          {/* Bookmark Button (Pointer Events Enabled) */}
+          {/* Bookmark Button */}
           <button
             onClick={handleSaveClick}
-            className={`pointer-events-auto p-2 rounded-full backdrop-blur-md transition-all duration-200 ${
+            className={`pointer-events-auto p-2 rounded-full backdrop-blur-sm transition-all ${
               isSaved
-                ? 'bg-[#C85A32] text-white shadow-md'
-                : 'bg-black/50 hover:bg-black/80 text-white/70 hover:text-white border border-white/10'
+                ? 'bg-[#C85A32] text-white shadow-sm'
+                : 'bg-white/90 hover:bg-white text-[#78716C] hover:text-[#18181B] border border-[#E8E3DA]'
             }`}
             title={isSaved ? 'Remove from Vault' : 'Save to Vault'}
           >
@@ -70,15 +63,15 @@ export default function ItemCard({ item }) {
           </button>
         </div>
 
-        {/* Provenance Verification Tag */}
+        {/* Bottom Tag Bar on Image */}
         <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-[10px]">
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#0A0A0C]/80 backdrop-blur-sm border border-white/10 text-emerald-400">
-            <ShieldCheck className="w-3 h-3" />
-            <span className="truncate">{item.verificationStatus || '100% Indigenous'}</span>
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/95 backdrop-blur-sm border border-[#E8E3DA] text-emerald-700 font-semibold shadow-xs">
+            <ShieldCheck className="w-3 h-3 text-emerald-600" />
+            <span>Verified Provenance</span>
           </span>
 
           {item.pricingMode === 'auction' && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-950/80 backdrop-blur-sm border border-[#D4AF37]/30 text-[#D4AF37] font-mono">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/95 backdrop-blur-sm border border-[#E8E3DA] text-[#C85A32] font-mono font-semibold shadow-xs">
               <Clock className="w-2.5 h-2.5" />
               <span>{item.bidEndsIn || 'Live'}</span>
             </span>
@@ -90,13 +83,13 @@ export default function ItemCard({ item }) {
       <div className="flex flex-col flex-grow">
         
         {/* Origin Geo Location */}
-        <div className="flex items-center gap-1 text-[11px] text-[#C5BFB5]/80 mb-1">
+        <div className="flex items-center gap-1 text-[11px] text-[#78716C] mb-1">
           <MapPin className="w-3 h-3 text-[#C85A32] flex-shrink-0" />
           <span className="truncate">{item.origin}</span>
         </div>
 
         {/* Title */}
-        <h3 className="font-serif text-base sm:text-lg font-bold text-[#F9F6F0] group-hover:text-[#D4AF37] transition-colors line-clamp-1 mb-1.5">
+        <h3 className="font-serif text-base sm:text-lg font-bold text-[#18181B] group-hover:text-[#C85A32] transition-colors line-clamp-1 mb-1.5">
           {item.title}
         </h3>
 
@@ -105,59 +98,59 @@ export default function ItemCard({ item }) {
           <img
             src={item.creator.avatar}
             alt={item.creator.name}
-            className="w-5 h-5 rounded-full object-cover border border-white/20"
+            className="w-5 h-5 rounded-full object-cover border border-[#E8E3DA]"
           />
-          <span className="text-xs text-[#C5BFB5] truncate">
+          <span className="text-xs text-[#57534E] truncate font-medium">
             {item.creator.name}
           </span>
         </div>
 
         {/* Bottom Pricing & Mode Bar */}
-        <div className="mt-auto pt-3 border-t border-white/5 flex items-center justify-between">
+        <div className="mt-auto pt-3 border-t border-[#E8E3DA] flex items-center justify-between">
           <div>
             {item.pricingMode === 'auction' ? (
               <div>
-                <span className="text-[10px] uppercase tracking-wider text-[#C5BFB5]/60 block leading-tight">
-                  Current Bid
+                <span className="text-[10px] uppercase tracking-wider text-[#78716C] block leading-tight font-medium">
+                  Leading Bid
                 </span>
-                <span className="text-sm sm:text-base font-bold text-[#D4AF37] font-mono">
+                <span className="text-sm sm:text-base font-bold text-[#18181B] font-mono">
                   ₦{Number(item.currentBid || item.price).toLocaleString()}
                 </span>
               </div>
             ) : item.pricingMode === 'recipe' ? (
               <div>
-                <span className="text-[10px] uppercase tracking-wider text-[#C5BFB5]/60 block leading-tight">
+                <span className="text-[10px] uppercase tracking-wider text-[#78716C] block leading-tight font-medium">
                   Recipe Unlock
                 </span>
-                <span className="text-sm sm:text-base font-bold text-emerald-400 font-mono">
+                <span className="text-sm sm:text-base font-bold text-emerald-700 font-mono">
                   ₦{Number(item.price).toLocaleString()}
                 </span>
               </div>
             ) : item.pricingMode === 'showcase' ? (
               <div>
-                <span className="text-[10px] uppercase tracking-wider text-[#C5BFB5]/60 block leading-tight">
-                  Public Archive
+                <span className="text-[10px] uppercase tracking-wider text-[#78716C] block leading-tight font-medium">
+                  Living Archive
                 </span>
-                <span className="text-xs font-semibold text-[#D4AF37]">
+                <span className="text-xs font-semibold text-[#C85A32]">
                   Free Oral Lore
                 </span>
               </div>
             ) : (
               <div>
-                <span className="text-[10px] uppercase tracking-wider text-[#C5BFB5]/60 block leading-tight">
+                <span className="text-[10px] uppercase tracking-wider text-[#78716C] block leading-tight font-medium">
                   Acquisition
                 </span>
-                <span className="text-sm sm:text-base font-bold text-[#F9F6F0] font-mono">
+                <span className="text-sm sm:text-base font-bold text-[#18181B] font-mono">
                   ₦{Number(item.price).toLocaleString()}
                 </span>
               </div>
             )}
           </div>
 
-          {/* Quick Action Button */}
+          {/* Action Button */}
           <button
             onClick={handleCardClick}
-            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-[#C85A32] text-xs font-medium text-[#F9F6F0] flex items-center gap-1 group-hover:bg-[#C85A32] group-hover:text-white transition-all duration-200"
+            className="px-3 py-1.5 rounded-xl bg-[#FAF8F5] hover:bg-[#C85A32] text-xs font-semibold text-[#18181B] hover:text-white border border-[#E8E3DA] hover:border-transparent flex items-center gap-1 transition-all"
           >
             {item.pricingMode === 'auction' ? (
               <span>Bid</span>
@@ -166,7 +159,7 @@ export default function ItemCard({ item }) {
             ) : item.category === 'folklore' ? (
               <span>Listen</span>
             ) : item.bespokeAvailable ? (
-              <span>Custom</span>
+              <span>Bespoke</span>
             ) : (
               <span>View</span>
             )}

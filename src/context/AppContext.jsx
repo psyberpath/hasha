@@ -90,14 +90,38 @@ export function AppProvider({ children }) {
   // Toast notifications
   const [notifications, setNotifications] = useState([]);
 
+  // Current top-level view: 'landing' | 'app'
+  const [currentView, setCurrentView] = useState(() => {
+    return localStorage.getItem('hasha_current_view') || 'landing';
+  });
+
   // Modals state
-  const [activeModal, setActiveModal] = useState(null); // 'onboarding' | 'uploadWizard' | 'itemDetail' | 'checkout' | 'bespoke' | 'folklore' | 'cart' | 'payout'
+  const [activeModal, setActiveModal] = useState(null); // 'onboarding' | 'signupCollector' | 'signupCreator' | 'uploadWizard' | 'itemDetail' | 'checkout' | 'bespoke' | 'folklore' | 'cart' | 'payout'
   const [selectedItem, setSelectedItem] = useState(null);
 
-  // Sync role & profile
+  // Sync view
   useEffect(() => {
-    localStorage.setItem('hasha_user_role', userRole);
-  }, [userRole]);
+    localStorage.setItem('hasha_current_view', currentView);
+  }, [currentView]);
+
+  const enterApp = (role = 'collector', profileData = null) => {
+    if (role) {
+      setUserRole(role);
+    }
+    if (profileData) {
+      setUserProfile((prev) => ({
+        ...prev,
+        ...profileData,
+        role: role || prev.role,
+      }));
+    }
+    setCurrentView('app');
+    notify('Access Granted', `Welcome to hasha as a verified ${role === 'creator' ? 'Indigenous Creator' : 'Connoisseur'}.`, 'info');
+  };
+
+  const returnToLanding = () => {
+    setCurrentView('landing');
+  };
 
   useEffect(() => {
     localStorage.setItem('hasha_user_profile', JSON.stringify(userProfile));
@@ -278,6 +302,10 @@ export function AppProvider({ children }) {
         notifications,
         notify,
         removeNotification,
+        currentView,
+        setCurrentView,
+        enterApp,
+        returnToLanding,
         activeModal,
         setActiveModal,
         selectedItem,

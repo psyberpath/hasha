@@ -12,18 +12,16 @@ import {
   Lock, 
   RefreshCw, 
   Download, 
-  MapPin,
-  Sparkles
+  MapPin
 } from 'lucide-react';
 
 export default function CheckoutModal() {
   const { selectedItem, setActiveModal, completePurchase, userProfile } = useApp();
 
-  const [paymentMethod, setPaymentMethod] = useState('card'); // 'card' | 'bank' | 'ussd'
+  const [paymentMethod, setPaymentMethod] = useState('card');
   const [isProcessing, setIsProcessing] = useState(false);
   const [receipt, setReceipt] = useState(null);
 
-  // Form Fields
   const [address, setAddress] = useState('Plot 14 Admiralty Way, Lekki Phase 1, Lagos');
   const [cardNumber, setCardNumber] = useState('5399 4100 8921 4452');
   const [expiry, setExpiry] = useState('08/29');
@@ -62,58 +60,56 @@ export default function CheckoutModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
       <div 
-        className="glass-panel w-full max-w-xl rounded-3xl border border-white/10 shadow-2xl overflow-hidden my-auto relative animate-in fade-in zoom-in-95 duration-200 text-left"
+        className="bg-white w-full max-w-xl rounded-3xl border border-[#E8E3DA] shadow-2xl overflow-hidden my-auto relative animate-in fade-in zoom-in-95 duration-200 text-left"
         onClick={(e) => e.stopPropagation()}
       >
         
-        {/* Modal Header */}
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-white/10 bg-[#0A0A0C]/80">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#E8E3DA] bg-[#FAF8F5]">
           <div className="flex items-center gap-2">
-            <Lock className="w-4 h-4 text-emerald-400" />
-            <h3 className="font-serif text-lg font-bold text-white">
+            <Lock className="w-4 h-4 text-emerald-700" />
+            <h3 className="font-serif text-lg font-bold text-[#18181B]">
               {receipt ? 'Acquisition Receipt & Certificate' : 'Secure Nigerian Escrow Settlement'}
             </h3>
           </div>
           <button
             onClick={() => setActiveModal(null)}
-            className="p-1.5 rounded-full bg-white/5 hover:bg-white/10 text-[#C5BFB5] hover:text-white"
+            className="p-1.5 rounded-full hover:bg-[#E8E3DA] text-[#78716C] hover:text-[#18181B]"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Modal Body */}
+        {/* Body */}
         <div className="p-4 sm:p-6 max-h-[75vh] overflow-y-auto">
-          
           {!receipt ? (
-            <form onSubmit={handlePayNow} className="space-y-5">
+            <form onSubmit={handlePayNow} className="space-y-4">
               
-              {/* Order Summary Mini-Card */}
-              <div className="p-3.5 rounded-2xl bg-[#0A0A0C] border border-white/10 flex items-center gap-3.5">
+              {/* Order Summary */}
+              <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#E8E3DA] flex items-center gap-3.5">
                 <img
                   src={selectedItem.image}
                   alt={selectedItem.title}
-                  className="w-14 h-14 rounded-xl object-cover border border-white/10 flex-shrink-0"
+                  className="w-14 h-14 rounded-xl object-cover border border-[#E8E3DA] flex-shrink-0"
                 />
                 <div className="flex-grow truncate">
-                  <span className="text-[10px] text-[#D4AF37] uppercase font-bold tracking-wider block">
+                  <span className="text-[10px] text-[#C85A32] uppercase font-bold tracking-wider block">
                     {selectedItem.ethnicity} • {selectedItem.category}
                   </span>
-                  <h4 className="text-sm font-bold text-white truncate">
+                  <h4 className="text-sm font-bold text-[#18181B] truncate">
                     {selectedItem.title}
                   </h4>
-                  <span className="text-base font-bold text-emerald-400 font-mono">
+                  <span className="text-base font-bold text-[#18181B] font-mono">
                     ₦{Number(totalAmount).toLocaleString()}
                   </span>
                 </div>
               </div>
 
-              {/* Delivery Address (if physical) */}
               {selectedItem.pricingMode !== 'recipe' && (
                 <div>
-                  <label className="text-xs font-semibold text-[#C5BFB5] block mb-1">
+                  <label className="text-xs font-semibold text-[#18181B] block mb-1">
                     Delivery Address (Nigeria & Diaspora Courier)
                   </label>
                   <div className="relative">
@@ -122,15 +118,14 @@ export default function CheckoutModal() {
                       type="text"
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
-                      className="w-full bg-[#0A0A0C] border border-white/10 rounded-xl pl-9 pr-3 py-2 text-xs text-white outline-none focus:border-[#C85A32]"
+                      className="w-full bg-[#FAF8F5] border border-[#E8E3DA] focus:border-[#C85A32] rounded-xl pl-9 pr-3 py-2 text-xs text-[#18181B] outline-none"
                     />
                   </div>
                 </div>
               )}
 
-              {/* Payment Method Switcher */}
               <div>
-                <label className="text-xs font-semibold text-[#C5BFB5] block mb-1.5">
+                <label className="text-xs font-semibold text-[#18181B] block mb-1.5">
                   Select Settlement Channel
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -139,11 +134,11 @@ export default function CheckoutModal() {
                     onClick={() => setPaymentMethod('card')}
                     className={`p-2.5 rounded-xl border text-center text-xs flex flex-col items-center gap-1 transition-all ${
                       paymentMethod === 'card'
-                        ? 'border-[#C85A32] bg-[#C85A32]/10 text-white font-bold'
-                        : 'border-white/5 bg-[#0A0A0C] text-[#C5BFB5]'
+                        ? 'border-[#C85A32] bg-[#FAF8F5] text-[#18181B] font-bold'
+                        : 'border-[#E8E3DA] bg-white text-[#78716C]'
                     }`}
                   >
-                    <CreditCard className="w-4 h-4 text-[#D4AF37]" />
+                    <CreditCard className="w-4 h-4 text-[#C85A32]" />
                     <span>Debit Card</span>
                   </button>
 
@@ -152,11 +147,11 @@ export default function CheckoutModal() {
                     onClick={() => setPaymentMethod('bank')}
                     className={`p-2.5 rounded-xl border text-center text-xs flex flex-col items-center gap-1 transition-all ${
                       paymentMethod === 'bank'
-                        ? 'border-[#C85A32] bg-[#C85A32]/10 text-white font-bold'
-                        : 'border-white/5 bg-[#0A0A0C] text-[#C5BFB5]'
+                        ? 'border-[#C85A32] bg-[#FAF8F5] text-[#18181B] font-bold'
+                        : 'border-[#E8E3DA] bg-white text-[#78716C]'
                     }`}
                   >
-                    <Building2 className="w-4 h-4 text-emerald-400" />
+                    <Building2 className="w-4 h-4 text-emerald-700" />
                     <span>Bank Transfer</span>
                   </button>
 
@@ -165,47 +160,46 @@ export default function CheckoutModal() {
                     onClick={() => setPaymentMethod('ussd')}
                     className={`p-2.5 rounded-xl border text-center text-xs flex flex-col items-center gap-1 transition-all ${
                       paymentMethod === 'ussd'
-                        ? 'border-[#C85A32] bg-[#C85A32]/10 text-white font-bold'
-                        : 'border-white/5 bg-[#0A0A0C] text-[#C5BFB5]'
+                        ? 'border-[#C85A32] bg-[#FAF8F5] text-[#18181B] font-bold'
+                        : 'border-[#E8E3DA] bg-white text-[#78716C]'
                     }`}
                   >
-                    <Smartphone className="w-4 h-4 text-purple-400" />
+                    <Smartphone className="w-4 h-4 text-[#18181B]" />
                     <span>USSD Code</span>
                   </button>
                 </div>
               </div>
 
-              {/* Card Inputs */}
               {paymentMethod === 'card' && (
-                <div className="space-y-3 p-3.5 rounded-xl bg-[#0A0A0C] border border-white/5">
+                <div className="space-y-3 p-3.5 rounded-xl bg-[#FAF8F5] border border-[#E8E3DA]">
                   <div>
-                    <label className="text-[11px] text-[#C5BFB5] block mb-1">Card Number</label>
+                    <label className="text-[11px] text-[#57534E] block mb-1">Card Number</label>
                     <input
                       type="text"
                       value={cardNumber}
                       onChange={(e) => setCardNumber(e.target.value)}
-                      className="w-full bg-[#161720] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white font-mono outline-none"
+                      className="w-full bg-white border border-[#E8E3DA] rounded-lg px-3 py-1.5 text-xs text-[#18181B] font-mono outline-none"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-[11px] text-[#C5BFB5] block mb-1">Expiry</label>
+                      <label className="text-[11px] text-[#57534E] block mb-1">Expiry</label>
                       <input
                         type="text"
                         value={expiry}
                         onChange={(e) => setExpiry(e.target.value)}
-                        className="w-full bg-[#161720] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white font-mono outline-none"
+                        className="w-full bg-white border border-[#E8E3DA] rounded-lg px-3 py-1.5 text-xs text-[#18181B] font-mono outline-none"
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] text-[#C5BFB5] block mb-1">CVV</label>
+                      <label className="text-[11px] text-[#57534E] block mb-1">CVV</label>
                       <input
                         type="password"
                         maxLength={3}
                         value={cvv}
                         onChange={(e) => setCvv(e.target.value)}
-                        className="w-full bg-[#161720] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white font-mono outline-none"
+                        className="w-full bg-white border border-[#E8E3DA] rounded-lg px-3 py-1.5 text-xs text-[#18181B] font-mono outline-none"
                       />
                     </div>
                   </div>
@@ -213,41 +207,39 @@ export default function CheckoutModal() {
               )}
 
               {paymentMethod === 'bank' && (
-                <div className="p-3.5 rounded-xl bg-[#0A0A0C] border border-white/5 text-xs space-y-1">
-                  <span className="text-[10px] uppercase font-bold text-[#D4AF37] block">
+                <div className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#E8E3DA] text-xs space-y-1">
+                  <span className="text-[10px] uppercase font-bold text-[#C85A32] block">
                     Dynamic Escrow Account Details:
                   </span>
-                  <p className="text-white font-bold">hasha Escrow / Providus Bank</p>
-                  <p className="text-emerald-400 font-mono text-sm">9928103445</p>
-                  <p className="text-[#C5BFB5] text-[11px]">
-                    Expires in 30 minutes. Auto-detects your incoming transfer.
+                  <p className="text-[#18181B] font-bold">hasha Escrow / Providus Bank</p>
+                  <p className="text-emerald-800 font-mono text-sm font-bold">9928103445</p>
+                  <p className="text-[#57534E] text-[11px]">
+                    Expires in 30 minutes. Auto-detects incoming NIP payment.
                   </p>
                 </div>
               )}
 
               {paymentMethod === 'ussd' && (
-                <div className="p-3.5 rounded-xl bg-[#0A0A0C] border border-white/5 text-xs space-y-1">
-                  <span className="text-[10px] uppercase font-bold text-purple-400 block">
-                    Dial on Registered Phone:
+                <div className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#E8E3DA] text-xs space-y-1">
+                  <span className="text-[10px] uppercase font-bold text-[#18181B] block">
+                    Dial on Registered Mobile Phone:
                   </span>
-                  <p className="text-white font-mono text-base font-bold">*737*50*500000*0123#</p>
-                  <p className="text-[#C5BFB5] text-[11px]">Available on GTB, Zenith, Access, and UBA.</p>
+                  <p className="text-[#18181B] font-mono text-base font-bold">*737*50*500000*0123#</p>
+                  <p className="text-[#57534E] text-[11px]">Available on GTB, Zenith, Access, and UBA.</p>
                 </div>
               )}
 
-              {/* Escrow Guarantee Statement */}
-              <div className="flex items-center gap-2 text-[11px] text-white/50">
-                <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+              <div className="flex items-center gap-2 text-[11px] text-[#78716C]">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                 <span>
-                  Funds are held in neutral escrow until physical provenance verification is signed.
+                  Funds held in secure neutral escrow until physical provenance verification.
                 </span>
               </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={isProcessing}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#C85A32] to-[#E07149] hover:from-[#E07149] hover:to-[#C85A32] text-white font-bold text-xs shadow-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                className="w-full py-3.5 rounded-xl bg-[#C85A32] hover:bg-[#A24220] text-white font-bold text-xs shadow-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50"
               >
                 {isProcessing ? (
                   <>
@@ -263,55 +255,53 @@ export default function CheckoutModal() {
 
             </form>
           ) : (
-            /* SUCCESS CERTIFICATE */
             <div className="space-y-5 text-center">
-              <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
+              <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center mx-auto border border-emerald-200">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
 
               <div>
-                <h3 className="font-serif text-2xl font-bold text-white mb-1">
+                <h3 className="font-serif text-2xl font-bold text-[#18181B] mb-1">
                   Acquisition Successfully Settled!
                 </h3>
-                <p className="text-xs text-[#C5BFB5]">
-                  Transaction Reference: <span className="font-mono text-[#D4AF37]">{receipt.transactionRef}</span>
+                <p className="text-xs text-[#57534E]">
+                  Transaction Reference: <span className="font-mono text-[#C85A32]">{receipt.transactionRef}</span>
                 </p>
               </div>
 
-              {/* Certificate Box */}
-              <div className="p-5 rounded-2xl bg-[#0A0A0C] border border-[#D4AF37]/30 text-left relative overflow-hidden">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-3">
+              <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#E8E3DA] text-left">
+                <div className="flex items-center justify-between border-b border-[#E8E3DA] pb-3 mb-3">
                   <div>
-                    <span className="font-serif font-black text-sm text-[#D4AF37]">
+                    <span className="font-serif font-black text-sm text-[#18181B]">
                       hasha Provenance Registry
                     </span>
-                    <span className="text-[10px] text-white/50 block">Certificate of Authenticity</span>
+                    <span className="text-[10px] text-[#78716C] block">Certificate of Authenticity</span>
                   </div>
-                  <ShieldCheck className="w-6 h-6 text-[#D4AF37]" />
+                  <ShieldCheck className="w-6 h-6 text-[#C85A32]" />
                 </div>
 
                 <div className="space-y-1.5 text-xs">
                   <div className="flex justify-between">
-                    <span className="text-[#C5BFB5]">Artifact Title:</span>
-                    <span className="font-bold text-white truncate max-w-[200px]">{selectedItem.title}</span>
+                    <span className="text-[#57534E]">Artifact Title:</span>
+                    <span className="font-bold text-[#18181B] truncate max-w-[200px]">{selectedItem.title}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[#C5BFB5]">Artisan / Guild:</span>
-                    <span className="text-white">{selectedItem.creator?.name}</span>
+                    <span className="text-[#57534E]">Artisan / Guild:</span>
+                    <span className="text-[#18181B]">{selectedItem.creator?.name}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[#C5BFB5]">Cultural Lineage:</span>
-                    <span className="text-[#D4AF37]">{selectedItem.ethnicity}</span>
+                    <span className="text-[#57534E]">Cultural Lineage:</span>
+                    <span className="text-[#C85A32] font-semibold">{selectedItem.ethnicity}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[#C5BFB5]">Settled Valuation:</span>
-                    <span className="font-mono font-bold text-emerald-400">
+                    <span className="text-[#57534E]">Settled Valuation:</span>
+                    <span className="font-mono font-bold text-emerald-800">
                       ₦{Number(totalAmount).toLocaleString()}
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-white/5 text-[10px] text-white/40 flex items-center justify-between">
+                <div className="mt-4 pt-3 border-t border-[#E8E3DA] text-[10px] text-[#78716C] flex items-center justify-between">
                   <span>Signed: Ọ̀ṣọ́ & Ọ̀tun Heritage Guild</span>
                   <span className="font-mono">NCMM Reg #{receipt.transactionRef.slice(-6)}</span>
                 </div>
@@ -319,8 +309,8 @@ export default function CheckoutModal() {
 
               <div className="flex gap-3">
                 <button
-                  onClick={() => alert('Certificate downloaded to your device as PDF.')}
-                  className="flex-1 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-semibold text-white flex items-center justify-center gap-1.5 transition-colors"
+                  onClick={() => alert('Certificate downloaded as PDF.')}
+                  className="flex-1 py-2.5 rounded-xl bg-white border border-[#E8E3DA] hover:bg-[#FAF8F5] text-xs font-semibold text-[#18181B] flex items-center justify-center gap-1.5 transition-colors"
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>Download Provenance PDF</span>
@@ -328,7 +318,7 @@ export default function CheckoutModal() {
 
                 <button
                   onClick={() => setActiveModal(null)}
-                  className="flex-1 py-2.5 rounded-xl bg-[#C85A32] text-xs font-bold text-white hover:bg-[#E07149] transition-colors"
+                  className="flex-1 py-2.5 rounded-xl bg-[#C85A32] text-xs font-bold text-white hover:bg-[#A24220] transition-colors"
                 >
                   Return to Sanctuary
                 </button>
@@ -336,7 +326,6 @@ export default function CheckoutModal() {
 
             </div>
           )}
-
         </div>
 
       </div>

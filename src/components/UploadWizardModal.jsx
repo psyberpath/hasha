@@ -6,23 +6,19 @@ import { NIGERIAN_BANKS, NIGERIAN_ETHNICITIES } from '../data/mockData';
 import { 
   X, 
   Upload, 
-  Sparkles, 
   ShieldCheck, 
   Check, 
   ArrowRight, 
   ArrowLeft, 
-  Image as ImageIcon, 
   DollarSign, 
   Gavel, 
   Eye, 
-  AlertTriangle, 
   CheckCircle2, 
   Building2, 
   RefreshCw, 
   MapPin, 
   FileText,
-  Sliders,
-  Scale
+  BookOpen
 } from 'lucide-react';
 
 const PRESET_UPLOADS = [
@@ -70,19 +66,15 @@ export default function UploadWizardModal() {
     pricingMode: 'auction', // 'showcase' | 'fixed' | 'auction'
     price: 1850000,
     startingBid: 1200000,
-    isAiGenerated: false,
     legalIpAgreed: false,
     bankName: 'Guaranty Trust Bank (GTCO)',
     accountNumber: '0124893710',
     accountName: 'Osahenrumwen Orobator (Verified Guild Member)'
   });
 
-  // Gemma AI State
   const [isEnhancing, setIsEnhancing] = useState(false);
-  const [gemmaResult, setGemmaResult] = useState(null);
-  const [diffAccepted, setDiffAccepted] = useState(false);
+  const [enhancedResult, setEnhancedResult] = useState(null);
 
-  // Handle Preset Image Selection
   const applyPreset = (preset) => {
     setFormData((prev) => ({
       ...prev,
@@ -95,10 +87,9 @@ export default function UploadWizardModal() {
     }));
   };
 
-  // Step 3: Trigger Gemma AI
-  const handleEnhanceWithGemma = async () => {
+  const handleEnhanceContext = async () => {
     if (!formData.rawDescription.trim()) {
-      alert('Please enter at least a brief raw description to enhance.');
+      alert('Please enter at least a brief raw description to expand.');
       return;
     }
 
@@ -110,12 +101,11 @@ export default function UploadWizardModal() {
         origin: formData.origin,
       });
 
-      setGemmaResult(res);
+      setEnhancedResult(res);
       setFormData((prev) => ({
         ...prev,
         enhancedDescription: res.enhancedText
       }));
-      setDiffAccepted(true);
     } catch (err) {
       console.error(err);
     } finally {
@@ -123,7 +113,6 @@ export default function UploadWizardModal() {
     }
   };
 
-  // Step 7: Final Submit
   const handleFinalPublish = async () => {
     if (!formData.legalIpAgreed) {
       alert('You must accept the Intellectual Property and Legal sign-off to proceed.');
@@ -152,8 +141,7 @@ export default function UploadWizardModal() {
         currentBid: formData.pricingMode === 'auction' ? Number(formData.startingBid) || 400000 : null,
         bidEndsIn: '48h 00m 00s',
         totalBids: 0,
-        isAiGenerated: formData.isAiGenerated,
-        verificationStatus: formData.isAiGenerated ? 'AI-Assisted Indigenous Concept' : '100% Indigenous Human-Crafted',
+        verificationStatus: '100% Indigenous Human-Crafted',
         verifiedProvenance: true,
         tags: [formData.ethnicity, 'New Release', 'Guild Registry'],
         material: 'Authentic local materials & indigenous technique',
@@ -163,12 +151,10 @@ export default function UploadWizardModal() {
       const res = await uploadArtPiece(finalItem);
       addArtPiece(res.item);
 
-      // Trigger Confetti
       confetti({
-        particleCount: 120,
+        particleCount: 100,
         spread: 80,
-        origin: { y: 0.6 },
-        colors: ['#C85A32', '#D4AF37', '#1E2038', '#F9F6F0']
+        origin: { y: 0.6 }
       });
 
       setActiveModal(null);
@@ -182,84 +168,80 @@ export default function UploadWizardModal() {
   const stepsList = [
     'Media Upload',
     'Metadata & Region',
-    'Gemma AI Enhancer',
+    'Curatorial Expander',
     'Monetization',
-    'Verification & IP',
+    'Provenance & IP',
     'Direct Settlement'
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
       <div 
-        className="glass-panel w-full max-w-4xl rounded-3xl border border-white/10 shadow-2xl overflow-hidden my-auto text-left relative animate-in fade-in zoom-in-95 duration-200"
+        className="bg-white w-full max-w-4xl rounded-3xl border border-[#E8E3DA] shadow-2xl overflow-hidden my-auto text-left relative animate-in fade-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         
-        {/* Top Header */}
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-white/10 bg-[#0A0A0C]/80">
+        {/* Header */}
+        <div className="flex items-center justify-between p-5 sm:p-6 border-b border-[#E8E3DA] bg-[#FAF8F5]">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#C85A32]"></span>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-[#D4AF37]">
-                Guild Master Upload Wizard
-              </span>
-            </div>
-            <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#F9F6F0]">
+            <span className="text-[10px] uppercase font-bold tracking-widest text-[#C85A32] block">
+              Guild Master Upload Wizard
+            </span>
+            <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#18181B]">
               Step {currentStep} of {stepsList.length}: {stepsList[currentStep - 1]}
             </h2>
           </div>
 
           <button
             onClick={() => setActiveModal(null)}
-            className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-[#C5BFB5] hover:text-white transition-colors"
+            className="p-1.5 rounded-full hover:bg-[#E8E3DA] text-[#78716C] hover:text-[#18181B] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Progress Tracker Bar */}
-        <div className="w-full bg-[#121318] h-1.5 flex">
+        {/* Progress Bar */}
+        <div className="w-full bg-[#FAF8F5] h-1.5 flex border-b border-[#E8E3DA]">
           {stepsList.map((_, idx) => (
             <div
               key={idx}
               className={`h-full flex-1 transition-all duration-300 ${
-                idx + 1 <= currentStep ? 'bg-gradient-to-r from-[#C85A32] to-[#D4AF37]' : 'bg-transparent'
+                idx + 1 <= currentStep ? 'bg-[#C85A32]' : 'bg-transparent'
               }`}
             />
           ))}
         </div>
 
         {/* Step Body */}
-        <div className="p-4 sm:p-8 max-h-[70vh] overflow-y-auto">
+        <div className="p-5 sm:p-8 max-h-[70vh] overflow-y-auto">
           
           {/* STEP 1: MEDIA UPLOAD */}
           {currentStep === 1 && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-base font-bold text-white mb-1">
+                <h3 className="text-base font-bold text-[#18181B] mb-1">
                   Upload High-Definition Artifact Imagery
                 </h3>
-                <p className="text-xs text-[#C5BFB5]">
-                  High quality photography of your sculpture, woven textiles, cuisine, or painting.
+                <p className="text-xs text-[#57534E]">
+                  Photography of your sculpture, woven textiles, cuisine, or painting.
                 </p>
               </div>
 
-              {/* Upload Zone */}
-              <div className="border-2 border-dashed border-white/15 hover:border-[#C85A32] rounded-2xl p-6 sm:p-8 text-center bg-[#0A0A0C]/60 transition-colors">
+              <div className="border-2 border-dashed border-[#E8E3DA] hover:border-[#C85A32] rounded-2xl p-6 sm:p-8 text-center bg-[#FAF8F5] transition-colors">
                 {formData.image ? (
-                  <div className="relative max-w-sm mx-auto aspect-[4/3] rounded-xl overflow-hidden border border-white/10 mb-4">
+                  <div className="relative max-w-sm mx-auto aspect-[4/3] rounded-xl overflow-hidden border border-[#E8E3DA] mb-4 shadow-xs">
                     <img
                       src={formData.image}
                       alt="Preview"
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/70 text-[10px] text-emerald-400 border border-white/10">
+                    <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-white text-[10px] text-emerald-700 font-bold border border-[#E8E3DA] shadow-xs">
                       ✓ Image Verified
                     </div>
                   </div>
                 ) : (
-                  <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-3 text-[#C85A32]">
-                    <Upload className="w-7 h-7" />
+                  <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center mx-auto mb-3 text-[#C85A32] border border-[#E8E3DA]">
+                    <Upload className="w-6 h-6" />
                   </div>
                 )}
 
@@ -269,18 +251,17 @@ export default function UploadWizardModal() {
                     value={formData.image}
                     onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                     placeholder="Enter image URL or select from cultural presets below..."
-                    className="w-full max-w-md bg-[#161720] border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-[#C85A32]"
+                    className="w-full max-w-md bg-white border border-[#E8E3DA] rounded-xl px-3 py-2 text-xs text-[#18181B] outline-none focus:border-[#C85A32]"
                   />
-                  <span className="text-[11px] text-white/40">
+                  <span className="text-[11px] text-[#78716C]">
                     Supports JPG, PNG, WEBP, ProRes Raw Video (Max 150MB)
                   </span>
                 </div>
               </div>
 
-              {/* Quick Preset Selector for Fast Hackathon Evaluation */}
               <div>
-                <span className="text-xs font-semibold text-[#D4AF37] block mb-2">
-                  ⚡ Or select an authentic Nigerian cultural preset to test instantly:
+                <span className="text-xs font-semibold text-[#18181B] block mb-2">
+                  Select an authentic Nigerian preset to test quickly:
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {PRESET_UPLOADS.map((preset, idx) => (
@@ -290,8 +271,8 @@ export default function UploadWizardModal() {
                       onClick={() => applyPreset(preset)}
                       className={`p-2.5 rounded-xl border text-left flex items-center gap-2.5 transition-all ${
                         formData.image === preset.url
-                          ? 'border-[#C85A32] bg-[#C85A32]/10'
-                          : 'border-white/5 bg-[#121318] hover:border-white/20'
+                          ? 'border-[#C85A32] bg-[#FAF8F5]'
+                          : 'border-[#E8E3DA] bg-white hover:border-[#C85A32]'
                       }`}
                     >
                       <img
@@ -300,10 +281,10 @@ export default function UploadWizardModal() {
                         className="w-10 h-10 rounded-lg object-cover"
                       />
                       <div className="truncate">
-                        <span className="text-xs font-bold text-white block truncate">
+                        <span className="text-xs font-bold text-[#18181B] block truncate">
                           {preset.name}
                         </span>
-                        <span className="text-[10px] text-[#C5BFB5] block">
+                        <span className="text-[10px] text-[#57534E] block">
                           {preset.ethnicity}
                         </span>
                       </div>
@@ -314,20 +295,20 @@ export default function UploadWizardModal() {
             </div>
           )}
 
-          {/* STEP 2: METADATA, TITLE & GEOGRAPHY */}
+          {/* STEP 2: METADATA & LOCATION */}
           {currentStep === 2 && (
             <div className="space-y-4">
               <div>
-                <h3 className="text-base font-bold text-white mb-1">
+                <h3 className="text-base font-bold text-[#18181B] mb-1">
                   Title, Category & Geographical Provenance
                 </h3>
-                <p className="text-xs text-[#C5BFB5]">
+                <p className="text-xs text-[#57534E]">
                   Specify precise ancestral provenance in Nigeria to register this piece in the hasha archive.
                 </p>
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#C5BFB5] block mb-1">
+                <label className="text-xs font-semibold text-[#18181B] block mb-1">
                   Masterpiece Title
                 </label>
                 <input
@@ -335,19 +316,19 @@ export default function UploadWizardModal() {
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="e.g., Royal Bronze Equestrian Warrior of Benin"
-                  className="w-full bg-[#0A0A0C] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-[#C85A32]"
+                  className="w-full bg-[#FAF8F5] border border-[#E8E3DA] focus:border-[#C85A32] rounded-xl px-3.5 py-2.5 text-xs text-[#18181B] outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-[#C5BFB5] block mb-1">
-                    Art Form Category
+                  <label className="text-xs font-semibold text-[#18181B] block mb-1">
+                    Category
                   </label>
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full bg-[#0A0A0C] border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-[#C85A32]"
+                    className="w-full bg-[#FAF8F5] border border-[#E8E3DA] focus:border-[#C85A32] rounded-xl px-3 py-2.5 text-xs text-[#18181B] outline-none"
                   >
                     <option value="sculptures">Paintings & Sculptures</option>
                     <option value="fashion">Indigenous Fashion & Weaving</option>
@@ -357,13 +338,13 @@ export default function UploadWizardModal() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-[#C5BFB5] block mb-1">
+                  <label className="text-xs font-semibold text-[#18181B] block mb-1">
                     Ethnic Lineage
                   </label>
                   <select
                     value={formData.ethnicity}
                     onChange={(e) => setFormData({ ...formData, ethnicity: e.target.value })}
-                    className="w-full bg-[#0A0A0C] border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-[#C85A32]"
+                    className="w-full bg-[#FAF8F5] border border-[#E8E3DA] focus:border-[#C85A32] rounded-xl px-3 py-2.5 text-xs text-[#18181B] outline-none"
                   >
                     {NIGERIAN_ETHNICITIES.filter((e) => e !== 'All Heritages').map((eth) => (
                       <option key={eth} value={eth}>{eth}</option>
@@ -373,7 +354,7 @@ export default function UploadWizardModal() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#C5BFB5] block mb-1">
+                <label className="text-xs font-semibold text-[#18181B] block mb-1">
                   Exact Geographical Origin in Nigeria
                 </label>
                 <div className="relative">
@@ -383,34 +364,28 @@ export default function UploadWizardModal() {
                     value={formData.origin}
                     onChange={(e) => setFormData({ ...formData, origin: e.target.value })}
                     placeholder="e.g. Osun-Osogbo Sacred Grove, Osun State or Okene, Kogi State"
-                    className="w-full bg-[#0A0A0C] border border-white/10 rounded-xl pl-9 pr-3.5 py-2.5 text-xs text-white outline-none focus:border-[#C85A32]"
+                    className="w-full bg-[#FAF8F5] border border-[#E8E3DA] focus:border-[#C85A32] rounded-xl pl-9 pr-3.5 py-2.5 text-xs text-[#18181B] outline-none"
                   />
                 </div>
-                <span className="text-[10px] text-[#C5BFB5]/60 mt-1 block">
-                  Authentic village, clan or guild workshop helps establish verified museum provenance.
-                </span>
               </div>
             </div>
           )}
 
-          {/* STEP 3: GEMMA AI DESCRIPTION ENHANCER */}
+          {/* STEP 3: CURATORIAL EXPANDER */}
           {currentStep === 3 && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-base font-bold text-white mb-1 flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-[#D4AF37]" />
-                    <span>Gemma AI Description Enhancer (Strict Fact Preservation)</span>
-                  </h3>
-                  <p className="text-xs text-[#C5BFB5]">
-                    Type a brief raw draft. Gemma AI enriches historical context and material composition without hallucinating provenance.
-                  </p>
-                </div>
+              <div>
+                <h3 className="text-base font-bold text-[#18181B] mb-1 flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-[#C85A32]" />
+                  <span>Curatorial Provenance & Description Expander</span>
+                </h3>
+                <p className="text-xs text-[#57534E]">
+                  Enter brief raw notes. The engine enriches material composition and ceremonial lineage adhering to strict NCMM provenance facts without speculation.
+                </p>
               </div>
 
-              {/* Raw Input Area */}
               <div>
-                <label className="text-xs font-semibold text-[#C5BFB5] block mb-1">
+                <label className="text-xs font-semibold text-[#18181B] block mb-1">
                   Creator's Raw Brief Description
                 </label>
                 <textarea
@@ -418,72 +393,67 @@ export default function UploadWizardModal() {
                   value={formData.rawDescription}
                   onChange={(e) => setFormData({ ...formData, rawDescription: e.target.value })}
                   placeholder="e.g., Handmade terracotta pot from Abuja pottery village with natural river clay..."
-                  className="w-full bg-[#0A0A0C] border border-white/10 rounded-xl p-3 text-xs text-white outline-none focus:border-[#C85A32]"
+                  className="w-full bg-[#FAF8F5] border border-[#E8E3DA] focus:border-[#C85A32] rounded-xl p-3 text-xs text-[#18181B] outline-none"
                 />
               </div>
 
-              {/* Enhance Action Button */}
               <div className="flex justify-end">
                 <button
                   type="button"
                   disabled={isEnhancing}
-                  onClick={handleEnhanceWithGemma}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#C85A32] hover:from-[#C85A32] hover:to-[#D4AF37] text-black hover:text-white font-bold text-xs flex items-center gap-2 transition-all shadow-lg disabled:opacity-50"
+                  onClick={handleEnhanceContext}
+                  className="px-5 py-2.5 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-white font-semibold text-xs flex items-center gap-2 transition-all shadow-xs disabled:opacity-50"
                 >
-                  <Sparkles className={`w-4 h-4 ${isEnhancing ? 'animate-spin' : ''}`} />
+                  <BookOpen className="w-4 h-4 text-[#C85A32]" />
                   <span>
-                    {isEnhancing ? 'Calling Gemma AI Inference...' : 'Enhance with Gemma AI (Strict Fact Preservation)'}
+                    {isEnhancing ? 'Consulting Historical Lineage...' : 'Enrich Historical Provenance (Strict Fact Preservation)'}
                   </span>
                 </button>
               </div>
 
-              {/* Side-by-Side or Editable Diff Preview */}
-              {gemmaResult && (
-                <div className="mt-4 p-4 rounded-2xl bg-[#121318] border border-[#D4AF37]/30 space-y-3">
+              {enhancedResult && (
+                <div className="mt-4 p-4 rounded-2xl bg-[#FAF8F5] border border-[#E8E3DA] space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-[#D4AF37] uppercase tracking-wider flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                      Gemma AI Contextual Expansion (Editable Diff)
+                    <span className="text-xs font-bold text-[#18181B] uppercase tracking-wider flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      Curatorial Historical Expansion (Editable)
                     </span>
-                    <span className="text-[10px] text-white/50">
-                      Zero-Hallucination Policy Checked
+                    <span className="text-[10px] text-[#78716C]">
+                      Zero-Speculation Verified
                     </span>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Original Raw */}
-                    <div className="p-3 rounded-xl bg-[#0A0A0C] border border-white/5 text-left">
-                      <span className="text-[10px] uppercase font-bold text-white/40 block mb-1">
-                        Original Raw Draft:
+                    <div className="p-3 rounded-xl bg-white border border-[#E8E3DA] text-left">
+                      <span className="text-[10px] uppercase font-bold text-[#78716C] block mb-1">
+                        Your Raw Draft:
                       </span>
-                      <p className="text-xs text-[#C5BFB5] italic">
-                        "{formData.rawDescription || 'None provided'}"
+                      <p className="text-xs text-[#57534E] italic">
+                        "{formData.rawDescription}"
                       </p>
                     </div>
 
-                    {/* Enhanced Textarea (Editable) */}
-                    <div className="p-3 rounded-xl bg-[#0A0A0C] border border-emerald-500/20 text-left">
-                      <span className="text-[10px] uppercase font-bold text-emerald-400 block mb-1">
-                        Gemma Enhanced Provenance (You may edit):
+                    <div className="p-3 rounded-xl bg-white border border-[#C85A32] text-left">
+                      <span className="text-[10px] uppercase font-bold text-[#C85A32] block mb-1">
+                        Enriched Curatorial Provenance:
                       </span>
                       <textarea
                         rows={4}
                         value={formData.enhancedDescription}
                         onChange={(e) => setFormData({ ...formData, enhancedDescription: e.target.value })}
-                        className="w-full bg-transparent text-xs text-white leading-relaxed outline-none resize-none"
+                        className="w-full bg-transparent text-xs text-[#18181B] leading-relaxed outline-none resize-none"
                       />
                     </div>
                   </div>
 
-                  {/* Cultural Tags Verified */}
-                  <div className="flex flex-wrap gap-1.5 pt-2 border-t border-white/5">
-                    <span className="text-[10px] text-[#D4AF37] font-semibold mr-1">
+                  <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[#E8E3DA]">
+                    <span className="text-[10px] text-[#78716C] font-semibold mr-1">
                       Historical Tags:
                     </span>
-                    {gemmaResult.culturalTags.map((tag, i) => (
+                    {enhancedResult.culturalTags.map((tag, i) => (
                       <span
                         key={i}
-                        className="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/80"
+                        className="px-2 py-0.5 rounded bg-white border border-[#E8E3DA] text-[10px] text-[#18181B]"
                       >
                         ✓ {tag}
                       </span>
@@ -498,152 +468,114 @@ export default function UploadWizardModal() {
           {currentStep === 4 && (
             <div className="space-y-5">
               <div>
-                <h3 className="text-base font-bold text-white mb-1">
+                <h3 className="text-base font-bold text-[#18181B] mb-1">
                   Choose Monetization & Distribution Mode
                 </h3>
-                <p className="text-xs text-[#C5BFB5]">
-                  Choose whether this piece is for preservation showcase, direct acquisition, or live guild bidding.
+                <p className="text-xs text-[#57534E]">
+                  Select whether this piece is for preservation showcase, direct acquisition, or live guild bidding.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-                
-                {/* Showcase */}
                 <div
                   onClick={() => setFormData({ ...formData, pricingMode: 'showcase' })}
                   className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                     formData.pricingMode === 'showcase'
-                      ? 'border-[#D4AF37] bg-[#D4AF37]/10'
-                      : 'border-white/10 bg-[#0A0A0C] hover:border-white/20'
+                      ? 'border-[#C85A32] bg-[#FAF8F5]'
+                      : 'border-[#E8E3DA] bg-white hover:border-[#18181B]'
                   }`}
                 >
-                  <Eye className="w-5 h-5 text-[#D4AF37] mb-2" />
-                  <h4 className="text-xs font-bold text-white mb-1">Showcase Only</h4>
-                  <p className="text-[11px] text-[#C5BFB5]">
+                  <Eye className="w-5 h-5 text-[#C85A32] mb-2" />
+                  <h4 className="text-xs font-bold text-[#18181B] mb-1">Showcase Only</h4>
+                  <p className="text-[11px] text-[#57534E]">
                     National archive preservation. Free for scholars and public viewing.
                   </p>
                 </div>
 
-                {/* Fixed Price */}
                 <div
                   onClick={() => setFormData({ ...formData, pricingMode: 'fixed' })}
                   className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                     formData.pricingMode === 'fixed'
-                      ? 'border-[#C85A32] bg-[#C85A32]/10'
-                      : 'border-white/10 bg-[#0A0A0C] hover:border-white/20'
+                      ? 'border-[#C85A32] bg-[#FAF8F5]'
+                      : 'border-[#E8E3DA] bg-white hover:border-[#18181B]'
                   }`}
                 >
                   <DollarSign className="w-5 h-5 text-[#C85A32] mb-2" />
-                  <h4 className="text-xs font-bold text-white mb-1">Fixed Price Sale (₦)</h4>
-                  <p className="text-[11px] text-[#C5BFB5]">
-                    Instant acquisition with direct escrow payment settlement.
+                  <h4 className="text-xs font-bold text-[#18181B] mb-1">Fixed Price Sale (₦)</h4>
+                  <p className="text-[11px] text-[#57534E]">
+                    Direct acquisition with instant escrow settlement.
                   </p>
                 </div>
 
-                {/* Live Auction */}
                 <div
                   onClick={() => setFormData({ ...formData, pricingMode: 'auction' })}
                   className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                     formData.pricingMode === 'auction'
-                      ? 'border-emerald-500 bg-emerald-500/10'
-                      : 'border-white/10 bg-[#0A0A0C] hover:border-white/20'
+                      ? 'border-[#C85A32] bg-[#FAF8F5]'
+                      : 'border-[#E8E3DA] bg-white hover:border-[#18181B]'
                   }`}
                 >
-                  <Gavel className="w-5 h-5 text-emerald-400 mb-2" />
-                  <h4 className="text-xs font-bold text-white mb-1">Live Bidding</h4>
-                  <p className="text-[11px] text-[#C5BFB5]">
+                  <Gavel className="w-5 h-5 text-[#C85A32] mb-2" />
+                  <h4 className="text-xs font-bold text-[#18181B] mb-1">Live Bidding</h4>
+                  <p className="text-[11px] text-[#57534E]">
                     Competitive guild auction with real-time live bid counter.
                   </p>
                 </div>
-
               </div>
 
-              {/* Price Fields */}
               {formData.pricingMode === 'fixed' && (
                 <div>
-                  <label className="text-xs font-semibold text-[#C5BFB5] block mb-1">
-                    Fixed Selling Price in Nigerian Naira (₦)
+                  <label className="text-xs font-semibold text-[#18181B] block mb-1">
+                    Fixed Price in Nigerian Naira (₦)
                   </label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#D4AF37] font-bold">₦</span>
-                    <input
-                      type="number"
-                      value={formData.price}
-                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                      className="w-full bg-[#0A0A0C] border border-white/10 rounded-xl pl-7 pr-3 py-2.5 text-xs text-white font-mono outline-none"
-                    />
-                  </div>
+                  <input
+                    type="number"
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    className="w-full bg-[#FAF8F5] border border-[#E8E3DA] focus:border-[#C85A32] rounded-xl px-3.5 py-2.5 text-xs text-[#18181B] font-mono outline-none"
+                  />
                 </div>
               )}
 
               {formData.pricingMode === 'auction' && (
                 <div>
-                  <label className="text-xs font-semibold text-[#C5BFB5] block mb-1">
+                  <label className="text-xs font-semibold text-[#18181B] block mb-1">
                     Starting Reserve Bid in Nigerian Naira (₦)
                   </label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#D4AF37] font-bold">₦</span>
-                    <input
-                      type="number"
-                      value={formData.startingBid}
-                      onChange={(e) => setFormData({ ...formData, startingBid: e.target.value })}
-                      className="w-full bg-[#0A0A0C] border border-white/10 rounded-xl pl-7 pr-3 py-2.5 text-xs text-white font-mono outline-none"
-                    />
-                  </div>
+                  <input
+                    type="number"
+                    value={formData.startingBid}
+                    onChange={(e) => setFormData({ ...formData, startingBid: e.target.value })}
+                    className="w-full bg-[#FAF8F5] border border-[#E8E3DA] focus:border-[#C85A32] rounded-xl px-3.5 py-2.5 text-xs text-[#18181B] font-mono outline-none"
+                  />
                 </div>
               )}
             </div>
           )}
 
-          {/* STEP 5: AI TRANSPARENCY & LEGAL SIGN-OFF */}
+          {/* STEP 5: PROVENANCE & IP */}
           {currentStep === 5 && (
             <div className="space-y-5">
               <div>
-                <h3 className="text-base font-bold text-white mb-1">
+                <h3 className="text-base font-bold text-[#18181B] mb-1">
                   Authenticity Verification & Legal Sign-off
                 </h3>
-                <p className="text-xs text-[#C5BFB5]">
-                  hasha enforces 100% transparency regarding human artisanal craftsmanship versus AI-assisted works.
+                <p className="text-xs text-[#57534E]">
+                  hasha guarantees museum-grade legal ownership and indigenous craftsmanship.
                 </p>
               </div>
 
-              {/* Mandatory AI Toggle */}
-              <div className="p-4 rounded-2xl bg-[#0A0A0C] border border-white/10 space-y-3">
-                <span className="text-xs font-bold text-[#D4AF37] uppercase tracking-wider block">
-                  Artisanal Provenance Declaration (Mandatory)
-                </span>
-                
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="ai_status"
-                    checked={!formData.isAiGenerated}
-                    onChange={() => setFormData({ ...formData, isAiGenerated: false })}
-                    className="accent-[#C85A32] w-4 h-4"
-                  />
-                  <div className="text-xs">
-                    <span className="text-white font-semibold block">100% Human-Crafted & Indigenous</span>
-                    <span className="text-[#C5BFB5]">Crafted entirely by hand using physical traditional media in Nigeria.</span>
-                  </div>
-                </label>
-
-                <label className="flex items-center gap-3 cursor-pointer pt-2 border-t border-white/5">
-                  <input
-                    type="radio"
-                    name="ai_status"
-                    checked={formData.isAiGenerated}
-                    onChange={() => setFormData({ ...formData, isAiGenerated: true })}
-                    className="accent-[#C85A32] w-4 h-4"
-                  />
-                  <div className="text-xs">
-                    <span className="text-white font-semibold block">This piece contains AI-generated elements</span>
-                    <span className="text-[#C5BFB5]">Digital composite or generative concept inspired by Nigerian heritage.</span>
-                  </div>
-                </label>
+              <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#E8E3DA] space-y-2">
+                <div className="flex items-center gap-2 text-xs font-bold text-[#18181B]">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <span>100% Indigenous Human-Crafted Declaration</span>
+                </div>
+                <p className="text-xs text-[#57534E]">
+                  I certify this artwork was created using traditional or contemporary physical craftsmanship in Nigeria.
+                </p>
               </div>
 
-              {/* Mandatory IP & Legal Liability Checkbox */}
-              <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30">
+              <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#E8E3DA]">
                 <label className="flex items-start gap-3 cursor-pointer">
                   <input
                     type="checkbox"
@@ -652,10 +584,10 @@ export default function UploadWizardModal() {
                     className="accent-[#C85A32] w-4 h-4 mt-0.5"
                   />
                   <div className="text-xs">
-                    <span className="text-[#F9F6F0] font-semibold block mb-1">
-                      Intellectual Property & Liability Sign-off (Required)
+                    <span className="text-[#18181B] font-bold block mb-1">
+                      Intellectual Property & Legal Liability Sign-off (Required)
                     </span>
-                    <p className="text-[#C5BFB5] leading-relaxed">
+                    <p className="text-[#57534E] leading-relaxed">
                       "I confirm I am the legal owner of this intellectual property, and I absolve Ọ̀ṣọ́ & Ọ̀tun of any copyright or ownership liability."
                     </p>
                   </div>
@@ -664,27 +596,27 @@ export default function UploadWizardModal() {
             </div>
           )}
 
-          {/* STEP 6: PAYOUT SETUP */}
+          {/* STEP 6: DIRECT SETTLEMENT */}
           {currentStep === 6 && (
             <div className="space-y-4">
               <div>
-                <h3 className="text-base font-bold text-white mb-1 flex items-center gap-2">
+                <h3 className="text-base font-bold text-[#18181B] mb-1 flex items-center gap-2">
                   <Building2 className="w-4 h-4 text-[#C85A32]" />
                   <span>Direct Settlement & Nigerian Bank Details</span>
                 </h3>
-                <p className="text-xs text-[#C5BFB5]">
-                  Escrow payouts for sales and winning auction bids are settled automatically into your bank account.
+                <p className="text-xs text-[#57534E]">
+                  Escrow payouts for sales and winning bids are disbursed directly into your bank account.
                 </p>
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#C5BFB5] block mb-1">
-                  Nigerian Settlement Bank
+                <label className="text-xs font-semibold text-[#18181B] block mb-1">
+                  Settlement Bank
                 </label>
                 <select
                   value={formData.bankName}
                   onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
-                  className="w-full bg-[#0A0A0C] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-[#C85A32]"
+                  className="w-full bg-[#FAF8F5] border border-[#E8E3DA] focus:border-[#C85A32] rounded-xl px-3.5 py-2.5 text-xs text-[#18181B] outline-none"
                 >
                   {NIGERIAN_BANKS.map((bank) => (
                     <option key={bank} value={bank}>{bank}</option>
@@ -693,7 +625,7 @@ export default function UploadWizardModal() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#C5BFB5] block mb-1">
+                <label className="text-xs font-semibold text-[#18181B] block mb-1">
                   10-Digit NUBAN Account Number
                 </label>
                 <input
@@ -701,12 +633,12 @@ export default function UploadWizardModal() {
                   maxLength={10}
                   value={formData.accountNumber}
                   onChange={(e) => setFormData({ ...formData, accountNumber: e.target.value })}
-                  className="w-full bg-[#0A0A0C] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono outline-none focus:border-[#C85A32]"
+                  className="w-full bg-[#FAF8F5] border border-[#E8E3DA] focus:border-[#C85A32] rounded-xl px-3.5 py-2.5 text-xs text-[#18181B] font-mono outline-none"
                 />
               </div>
 
-              <div className="p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 flex items-center gap-2.5 text-xs text-emerald-400">
-                <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+              <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-2.5 text-xs text-emerald-800">
+                <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-600" />
                 <span>
                   Verified Account Name: <strong>{formData.accountName}</strong>
                 </span>
@@ -716,13 +648,13 @@ export default function UploadWizardModal() {
 
         </div>
 
-        {/* Footer Navigation Buttons */}
-        <div className="p-4 sm:p-6 border-t border-white/10 bg-[#0A0A0C]/80 flex items-center justify-between">
+        {/* Footer Navigation */}
+        <div className="p-4 sm:p-6 border-t border-[#E8E3DA] bg-[#FAF8F5] flex items-center justify-between">
           <button
             type="button"
             disabled={currentStep === 1 || isSubmitting}
             onClick={() => setCurrentStep((prev) => Math.max(1, prev - 1))}
-            className="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-medium text-[#C5BFB5] hover:text-white disabled:opacity-30 transition-colors flex items-center gap-1.5"
+            className="px-4 py-2.5 rounded-xl border border-[#E8E3DA] text-xs font-semibold text-[#57534E] hover:text-[#18181B] disabled:opacity-30 transition-colors flex items-center gap-1.5"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Previous</span>
@@ -732,7 +664,7 @@ export default function UploadWizardModal() {
             <button
               type="button"
               onClick={() => setCurrentStep((prev) => Math.min(stepsList.length, prev + 1))}
-              className="px-6 py-2.5 rounded-xl bg-[#C85A32] hover:bg-[#E07149] text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg"
+              className="px-6 py-2.5 rounded-xl bg-[#C85A32] hover:bg-[#A24220] text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
             >
               <span>Next Step</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -742,7 +674,7 @@ export default function UploadWizardModal() {
               type="button"
               disabled={isSubmitting || !formData.legalIpAgreed}
               onClick={handleFinalPublish}
-              className="px-7 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#C85A32] hover:from-[#C85A32] hover:to-[#D4AF37] text-black hover:text-white text-xs font-bold transition-all shadow-xl flex items-center gap-2 disabled:opacity-50"
+              className="px-7 py-2.5 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-white text-xs font-bold transition-all shadow-md flex items-center gap-2 disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>
@@ -750,10 +682,7 @@ export default function UploadWizardModal() {
                   <span>Publishing to Registry...</span>
                 </>
               ) : (
-                <>
-                  <Sparkles className="w-4 h-4" />
-                  <span>Publish Masterpiece to hasha</span>
-                </>
+                <span>Publish Masterpiece to hasha</span>
               )}
             </button>
           )}

@@ -16,11 +16,34 @@ export const NIGERIAN_ETHNICITIES = [
 ];
 
 export const CATEGORIES = [
-  { id: 'all', label: 'All Treasures', icon: 'Sparkles' },
+  { id: 'all', label: 'All Treasures', icon: 'Compass' },
   { id: 'sculptures', label: 'Paintings & Sculptures', icon: 'Palette' },
   { id: 'fashion', label: 'Indigenous Fashion', icon: 'Shirt' },
   { id: 'food', label: 'Heritage Cuisine & Recipes', icon: 'Utensils' },
   { id: 'folklore', label: 'Folklore & Oral History', icon: 'BookOpen' },
+];
+
+export const FAQS = [
+  {
+    question: "How is the authenticity and provenance of each indigenous creation verified?",
+    answer: "Every piece listed on hasha undergoes provenance evaluation in collaboration with accredited guild elders, master artisans, and NCMM guidelines. Works are documented with geographic origin, artisanal lineage, and material authenticity."
+  },
+  {
+    question: "How do creators and master artisans receive payment settlements?",
+    answer: "hasha operates an automated direct settlement escrow system. Payments are disbursed directly to Nigerian commercial bank accounts via NIP transfer upon confirmed receipt and provenance verification."
+  },
+  {
+    question: "Can I commission bespoke pieces according to custom measurements?",
+    answer: "Yes. For indigenous textiles such as Aso-Oke, Akwete, and Babanriga, connoisseurs can submit exact tailoring measurements directly through the Bespoke Commission suite."
+  },
+  {
+    question: "How are fragile bronzes, terracottas, and sacred canvases packaged and shipped?",
+    answer: "Sculptures and physical artworks are crated in bespoke museum-grade wooden encasements with climate cushioning and shipped worldwide with tracked courier logistics."
+  },
+  {
+    question: "What is hasha's stance on cultural sovereignty and intellectual property?",
+    answer: "hasha exists to return sovereignty and dignified economic returns to indigenous Nigerian artisans, preserving ancient metallurgical, weaving, and culinary traditions without exploitative intermediaries."
+  }
 ];
 
 export const INITIAL_ITEMS = [

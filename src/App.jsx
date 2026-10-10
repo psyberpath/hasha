@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
+import LandingPage from './components/LandingPage';
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
 import Marketplace from './components/Marketplace';
 import CulturalStories from './components/CulturalStories';
 import CreatorDashboard from './components/CreatorDashboard';
@@ -9,16 +9,14 @@ import ItemDetailModal from './components/ItemDetailModal';
 import UploadWizardModal from './components/UploadWizardModal';
 import CheckoutModal from './components/CheckoutModal';
 import BespokeDesignModal from './components/BespokeDesignModal';
-import OnboardingModal from './components/OnboardingModal';
 import CartDrawer from './components/CartDrawer';
+import AuthModal from './components/AuthModal';
 import Footer from './components/Footer';
 import { 
   CheckCircle2, 
   AlertCircle, 
   Info, 
-  X, 
-  Sparkles, 
-  ShieldCheck 
+  X
 } from 'lucide-react';
 
 function ToastContainer() {
@@ -31,24 +29,22 @@ function ToastContainer() {
       {notifications.map((n) => (
         <div
           key={n.id}
-          className="pointer-events-auto p-4 rounded-2xl glass-panel border border-white/10 shadow-2xl flex items-start gap-3 animate-in slide-in-from-bottom-5 duration-300 text-left"
+          className="pointer-events-auto p-4 rounded-2xl bg-white border border-[#E8E3DA] shadow-xl flex items-start gap-3 animate-in slide-in-from-bottom-5 duration-300 text-left"
         >
           {n.type === 'success' ? (
-            <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-          ) : n.type === 'info' ? (
-            <Sparkles className="w-5 h-5 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
           ) : (
-            <AlertCircle className="w-5 h-5 text-[#C85A32] flex-shrink-0 mt-0.5" />
+            <Info className="w-5 h-5 text-[#C85A32] flex-shrink-0 mt-0.5" />
           )}
 
           <div className="flex-grow">
-            <h5 className="text-xs font-bold text-white mb-0.5">{n.title}</h5>
-            <p className="text-[11px] text-[#C5BFB5] leading-relaxed">{n.message}</p>
+            <h5 className="text-xs font-bold text-[#18181B] mb-0.5">{n.title}</h5>
+            <p className="text-[11px] text-[#57534E] leading-relaxed">{n.message}</p>
           </div>
 
           <button
             onClick={() => removeNotification(n.id)}
-            className="text-white/40 hover:text-white p-1"
+            className="text-[#78716C] hover:text-[#18181B] p-1"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -59,44 +55,47 @@ function ToastContainer() {
 }
 
 function MainContent() {
-  const { userRole, activeModal } = useApp();
+  const { currentView, activeModal } = useApp();
   const [currentTab, setCurrentTab] = useState('marketplace'); // 'marketplace' | 'cultural-stories' | 'creator-dashboard'
   const [activeCategory, setActiveCategory] = useState('all');
+  const [authRoleToOpen, setAuthRoleToOpen] = useState(null);
 
-  const scrollToMarketplace = () => {
-    setCurrentTab('marketplace');
-    const elem = document.getElementById('marketplace-section');
-    if (elem) {
-      elem.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  // If on standalone Landing Page
+  if (currentView === 'landing') {
+    return (
+      <div className="min-h-screen bg-[#FAF8F5] text-[#18181B]">
+        <LandingPage 
+          onOpenAuth={(role) => setAuthRoleToOpen(role)} 
+        />
 
-  const handleSelectCategoryFromHero = (catId) => {
-    setCurrentTab('marketplace');
-    setActiveCategory(catId);
-    const elem = document.getElementById('marketplace-section');
-    if (elem) {
-      elem.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+        {authRoleToOpen && (
+          <AuthModal 
+            initialRole={authRoleToOpen} 
+            onClose={() => setAuthRoleToOpen(null)} 
+          />
+        )}
 
+        {/* Dynamic Modals even from landing preview clicks */}
+        {activeModal === 'itemDetail' && <ItemDetailModal />}
+        {activeModal === 'checkout' && <CheckoutModal />}
+        {activeModal === 'bespoke' && <BespokeDesignModal />}
+
+        <ToastContainer />
+      </div>
+    );
+  }
+
+  // Inside the main app ecosystem
   return (
-    <div className="min-h-screen bg-[#0A0A0C] text-[#F9F6F0] flex flex-col justify-between selection:bg-[#C85A32] selection:text-white">
+    <div className="min-h-screen bg-[#FAF8F5] text-[#18181B] flex flex-col justify-between selection:bg-[#C85A32] selection:text-white">
       
-      {/* Background Decorative Ambience */}
-      <div className="fixed inset-0 pointer-events-none -z-10 adire-grid-bg opacity-70"></div>
-
       <div>
-        {/* Floating Glassmorphic Navigation */}
+        {/* Floating Light Mode Navigation */}
         <Navbar onNavigate={setCurrentTab} currentTab={currentTab} />
 
         {/* Tab Switch Routing */}
         {currentTab === 'marketplace' && (
           <main>
-            <Hero 
-              onExplore={scrollToMarketplace} 
-              onSelectCategory={handleSelectCategoryFromHero} 
-            />
             <Marketplace 
               activeCategory={activeCategory} 
               onCategoryChange={setActiveCategory} 
@@ -125,7 +124,6 @@ function MainContent() {
       {activeModal === 'uploadWizard' && <UploadWizardModal />}
       {activeModal === 'checkout' && <CheckoutModal />}
       {activeModal === 'bespoke' && <BespokeDesignModal />}
-      {activeModal === 'onboarding' && <OnboardingModal />}
       {activeModal === 'cart' && <CartDrawer />}
 
       {/* Live Toast Notifications */}
