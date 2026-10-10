@@ -371,22 +371,38 @@ export default function UploadWizardModal() {
             </div>
           )}
 
-          {/* STEP 3: CURATORIAL EXPANDER */}
+          {/* STEP 3: GEMMA AI CULTURAL EXPANDER */}
           {currentStep === 3 && (
             <div className="space-y-4">
-              <div>
-                <h3 className="text-base font-bold text-[#18181B] mb-1 flex items-center gap-2">
-                  <BookOpen className="w-4 h-4 text-[#C85A32]" />
-                  <span>Curatorial Provenance & Description Expander</span>
-                </h3>
-                <p className="text-xs text-[#57534E]">
-                  Enter brief raw notes. The engine enriches material composition and ceremonial lineage adhering to strict NCMM provenance facts without speculation.
-                </p>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h3 className="text-base font-bold text-[#18181B] mb-0.5 flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-[#C85A32]" />
+                    <span>Gemma AI Cultural Provenance & Description Enhancer</span>
+                  </h3>
+                  <p className="text-xs text-[#57534E]">
+                    Enter brief artisan notes. Gemma enriches historical context and material composition without hallucinating facts.
+                  </p>
+                </div>
+
+                <div className="flex-shrink-0">
+                  {import.meta.env.VITE_GEMMA_API_KEY || import.meta.env.VITE_GEMINI_API_KEY ? (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-bold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                      Gemma Live API Connected
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-medium" title="Add VITE_GEMMA_API_KEY in .env to call live model directly">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+                      Gemma Cultural Engine Ready
+                    </span>
+                  )}
+                </div>
               </div>
 
               <div>
                 <label className="text-xs font-semibold text-[#18181B] block mb-1">
-                  Creator's Raw Brief Description
+                  Artisan's Raw Brief Description
                 </label>
                 <textarea
                   rows={3}
@@ -397,16 +413,20 @@ export default function UploadWizardModal() {
                 />
               </div>
 
-              <div className="flex justify-end">
+              <div className="flex justify-between items-center">
+                <span className="text-[11px] text-[#78716C]">
+                  {import.meta.env.VITE_GEMMA_API_KEY ? 'Calls live Gemma model with zero-hallucination constraint.' : 'Supports VITE_GEMMA_API_KEY in .env or verified Nigerian archive.'}
+                </span>
+
                 <button
                   type="button"
                   disabled={isEnhancing}
                   onClick={handleEnhanceContext}
-                  className="px-5 py-2.5 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-white font-semibold text-xs flex items-center gap-2 transition-all shadow-xs disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-xl bg-[#C85A32] hover:bg-[#A24220] text-white font-bold text-xs flex items-center gap-2 transition-all shadow-xs disabled:opacity-50"
                 >
-                  <BookOpen className="w-4 h-4 text-[#C85A32]" />
+                  <BookOpen className="w-4 h-4" />
                   <span>
-                    {isEnhancing ? 'Consulting Historical Lineage...' : 'Enrich Historical Provenance (Strict Fact Preservation)'}
+                    {isEnhancing ? 'Consulting Gemma AI Inference...' : 'Enhance with Gemma AI (Strict Fact Preservation)'}
                   </span>
                 </button>
               </div>
@@ -416,10 +436,10 @@ export default function UploadWizardModal() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-[#18181B] uppercase tracking-wider flex items-center gap-1.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                      Curatorial Historical Expansion (Editable)
+                      Gemma AI Contextual Expansion (Editable Diff)
                     </span>
-                    <span className="text-[10px] text-[#78716C]">
-                      Zero-Speculation Verified
+                    <span className="text-[10px] font-mono text-[#78716C] bg-white px-2 py-0.5 rounded border border-[#E8E3DA]">
+                      {enhancedResult.source}
                     </span>
                   </div>
 

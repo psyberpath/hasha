@@ -23,26 +23,56 @@ export const CATEGORIES = [
   { id: 'folklore', label: 'Folklore & Oral History', icon: 'BookOpen' },
 ];
 
+export const GUILD_PARTNERS = [
+  { name: 'Iseyin Aso Ofi Weavers', region: 'Oyo State', specialty: 'Royal Silk-Cotton Looms' },
+  { name: 'Benin Bronze Guild', region: 'Edo State', specialty: '14th-Century Lost-Wax Metallurgy' },
+  { name: 'Abeokuta Adire Collective', region: 'Ogun State', specialty: 'Elu Leaf Indigo Resistance Dyeing' },
+  { name: 'Kano Leather Crafters', region: 'Kano State', specialty: 'Ancient Tanning & Morocco Leather' },
+];
+
+export const REVIEWS = [
+  {
+    quote: "Hasha gave my family's handwoven Aso-Ofi business a digital reach we never thought possible. Orders come in directly, and payments are settled instantly.",
+    author: "Pa Gabriel",
+    role: "Master Weaver, Oyo State",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80"
+  },
+  {
+    quote: "Finding authentic Benin bronze replicas with verified cultural history used to be impossible online. Hasha made discovery effortless and genuine.",
+    author: "Dr. Amina B.",
+    role: "Collector, Lagos",
+    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80"
+  },
+  {
+    quote: "I booked an Adire tie-and-dye workshop through Hasha during my visit to Lagos. Learning directly from a master artisan was the highlight of my trip.",
+    author: "Tariq E.",
+    role: "Cultural Tourist",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80"
+  },
+  {
+    quote: "It’s refreshing to see a platform that doesn't just sell art, but actively protects the oral stories and heritage behind every piece.",
+    author: "Nkechi O.",
+    role: "Art Historian, Abuja",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80"
+  }
+];
+
 export const FAQS = [
   {
-    question: "How is the authenticity and provenance of each indigenous creation verified?",
-    answer: "Every piece listed on hasha undergoes provenance evaluation in collaboration with accredited guild elders, master artisans, and NCMM guidelines. Works are documented with geographic origin, artisanal lineage, and material authenticity."
+    question: "How does Hasha ensure the cultural information is accurate?",
+    answer: "Hasha combines artisan-approved knowledge with smart cultural verification models that cross-reference verified heritage archives, ensuring zero fabricated information or misattributed histories."
   },
   {
-    question: "How do creators and master artisans receive payment settlements?",
-    answer: "hasha operates an automated direct settlement escrow system. Payments are disbursed directly to Nigerian commercial bank accounts via NIP transfer upon confirmed receipt and provenance verification."
+    question: "How do artisans receive payments for their crafts?",
+    answer: "All purchases, auction bids, and tips are processed through our integrated payment system, instantly crediting the artisan’s local bank account safely and directly."
   },
   {
-    question: "Can I commission bespoke pieces according to custom measurements?",
-    answer: "Yes. For indigenous textiles such as Aso-Oke, Akwete, and Babanriga, connoisseurs can submit exact tailoring measurements directly through the Bespoke Commission suite."
+    question: "Can I book live experiences or just physical art?",
+    answer: "Both! Hasha allows you to buy original artworks, bid on rare heritage items, or book hands-on craft workshops and virtual cultural tours led directly by master creators."
   },
   {
-    question: "How are fragile bronzes, terracottas, and sacred canvases packaged and shipped?",
-    answer: "Sculptures and physical artworks are crated in bespoke museum-grade wooden encasements with climate cushioning and shipped worldwide with tracked courier logistics."
-  },
-  {
-    question: "What is hasha's stance on cultural sovereignty and intellectual property?",
-    answer: "hasha exists to return sovereignty and dignified economic returns to indigenous Nigerian artisans, preserving ancient metallurgical, weaving, and culinary traditions without exploitative intermediaries."
+    question: "Who can sell on Hasha?",
+    answer: "Any indigenous artisan, traditional guild, woodcarver, weaver, painter, or storyteller across Nigeria can set up a storefront and start sharing their work with the world."
   }
 ];
 
