@@ -18,7 +18,8 @@ import {
 export default function CheckoutModal() {
   const { selectedItem, setActiveModal, completePurchase, userProfile } = useApp();
 
-  const [paymentMethod, setPaymentMethod] = useState('card');
+  const [paymentMethod, setPaymentMethod] = useState('alatpay');
+  const [customerEmail, setCustomerEmail] = useState(userProfile.email || 'collector@hasha.ng');
   const [isProcessing, setIsProcessing] = useState(false);
   const [receipt, setReceipt] = useState(null);
 
@@ -41,7 +42,7 @@ export default function CheckoutModal() {
         currency: 'NGN',
         itemId: selectedItem.id,
         paymentMethod,
-        email: userProfile.email,
+        email: customerEmail,
       });
 
       setReceipt(res);
@@ -128,13 +129,28 @@ export default function CheckoutModal() {
                 <label className="text-xs font-semibold text-[#18181B] block mb-1.5">
                   Select Settlement Channel
                 </label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('alatpay')}
+                    className={`p-2.5 rounded-xl border text-center text-xs flex flex-col items-center gap-1 transition-all ${
+                      paymentMethod === 'alatpay'
+                        ? 'border-[#C85A32] bg-[#FAF8F5] text-[#18181B] font-bold shadow-xs'
+                        : 'border-[#E8E3DA] bg-white text-[#78716C]'
+                    }`}
+                  >
+                    <div className="w-4 h-4 rounded-full bg-[#C85A32] text-white flex items-center justify-center font-bold text-[9px]">
+                      A
+                    </div>
+                    <span>ALATpay</span>
+                  </button>
+
                   <button
                     type="button"
                     onClick={() => setPaymentMethod('card')}
                     className={`p-2.5 rounded-xl border text-center text-xs flex flex-col items-center gap-1 transition-all ${
                       paymentMethod === 'card'
-                        ? 'border-[#C85A32] bg-[#FAF8F5] text-[#18181B] font-bold'
+                        ? 'border-[#C85A32] bg-[#FAF8F5] text-[#18181B] font-bold shadow-xs'
                         : 'border-[#E8E3DA] bg-white text-[#78716C]'
                     }`}
                   >
@@ -147,7 +163,7 @@ export default function CheckoutModal() {
                     onClick={() => setPaymentMethod('bank')}
                     className={`p-2.5 rounded-xl border text-center text-xs flex flex-col items-center gap-1 transition-all ${
                       paymentMethod === 'bank'
-                        ? 'border-[#C85A32] bg-[#FAF8F5] text-[#18181B] font-bold'
+                        ? 'border-[#C85A32] bg-[#FAF8F5] text-[#18181B] font-bold shadow-xs'
                         : 'border-[#E8E3DA] bg-white text-[#78716C]'
                     }`}
                   >
@@ -160,7 +176,7 @@ export default function CheckoutModal() {
                     onClick={() => setPaymentMethod('ussd')}
                     className={`p-2.5 rounded-xl border text-center text-xs flex flex-col items-center gap-1 transition-all ${
                       paymentMethod === 'ussd'
-                        ? 'border-[#C85A32] bg-[#FAF8F5] text-[#18181B] font-bold'
+                        ? 'border-[#C85A32] bg-[#FAF8F5] text-[#18181B] font-bold shadow-xs'
                         : 'border-[#E8E3DA] bg-white text-[#78716C]'
                     }`}
                   >
@@ -169,6 +185,57 @@ export default function CheckoutModal() {
                   </button>
                 </div>
               </div>
+
+              {paymentMethod === 'alatpay' && (
+                <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#C85A32]/40 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-lg bg-[#C85A32] text-white flex items-center justify-center font-bold text-xs">
+                        A
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold text-[#18181B] block">
+                          ALATpay by Wema Bank
+                        </span>
+                        <span className="text-[10px] text-[#78716C]">
+                          Direct Commercial Bank & Instant Escrow Settlement
+                        </span>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-mono bg-white text-emerald-800 font-bold px-2 py-0.5 rounded border border-[#E8E3DA]">
+                      Active Gateway
+                    </span>
+                  </div>
+
+                  <div className="p-3 bg-white rounded-xl border border-[#E8E3DA] space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-[#57534E]">ALAT Business ID:</span>
+                      <span className="font-mono text-[#18181B] font-semibold text-[11px]">
+                        d2bc136d-2740-4c02-ab87-9756d7c171e0
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-[#57534E]">Supported Channels:</span>
+                      <span className="text-[#18181B] text-[11px] font-medium">
+                        Wema / ALAT Direct • Card • USSD (*945#)
+                      </span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#57534E] block mb-1">
+                      Billing Email for ALATpay Direct Receipt
+                    </label>
+                    <input
+                      type="email"
+                      value={customerEmail}
+                      onChange={(e) => setCustomerEmail(e.target.value)}
+                      placeholder="collector@hasha.ng"
+                      className="w-full bg-white border border-[#E8E3DA] focus:border-[#C85A32] rounded-lg px-3 py-1.5 text-xs text-[#18181B] outline-none"
+                    />
+                  </div>
+                </div>
+              )}
 
               {paymentMethod === 'card' && (
                 <div className="space-y-3 p-3.5 rounded-xl bg-[#FAF8F5] border border-[#E8E3DA]">
@@ -244,11 +311,15 @@ export default function CheckoutModal() {
                 {isProcessing ? (
                   <>
                     <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Verifying Escrow Handshake...</span>
+                    <span>
+                      {paymentMethod === 'alatpay'
+                        ? 'Connecting to ALATpay Gateway...'
+                        : 'Verifying Escrow Handshake...'}
+                    </span>
                   </>
                 ) : (
                   <span>
-                    Pay ₦{Number(totalAmount).toLocaleString()} Securely
+                    Pay ₦{Number(totalAmount).toLocaleString()} {paymentMethod === 'alatpay' ? 'with ALATpay' : 'Securely'}
                   </span>
                 )}
               </button>
@@ -297,6 +368,12 @@ export default function CheckoutModal() {
                     <span className="text-[#57534E]">Settled Valuation:</span>
                     <span className="font-mono font-bold text-emerald-800">
                       ₦{Number(totalAmount).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#57534E]">Settlement Channel:</span>
+                    <span className="font-bold text-[#18181B]">
+                      {paymentMethod === 'alatpay' ? 'ALATpay by Wema (Escrow Secured)' : paymentMethod === 'card' ? 'Debit Card' : paymentMethod === 'bank' ? 'Bank Transfer' : 'USSD Code'}
                     </span>
                   </div>
                 </div>

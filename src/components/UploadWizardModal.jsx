@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { geminiEnhanceDescription, uploadArtPiece } from '../services/api';
 import confetti from 'canvas-confetti';
@@ -18,7 +18,8 @@ import {
   RefreshCw, 
   MapPin, 
   FileText,
-  BookOpen
+  BookOpen,
+  Image as ImageIcon
 } from 'lucide-react';
 
 const PRESET_UPLOADS = [
@@ -53,10 +54,13 @@ export default function UploadWizardModal() {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef(null);
 
   // Form State
   const [formData, setFormData] = useState({
     image: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80',
+    fileName: '',
     title: '',
     category: 'sculptures',
     ethnicity: 'Edo (Bini)',
@@ -75,10 +79,52 @@ export default function UploadWizardModal() {
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [enhancedResult, setEnhancedResult] = useState(null);
 
+  const processSelectedFile = (file) => {
+    if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+      alert('Please select a valid image or video file.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setFormData((prev) => ({
+        ...prev,
+        image: event.target.result,
+        fileName: file.name
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processSelectedFile(file);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processSelectedFile(file);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
   const applyPreset = (preset) => {
     setFormData((prev) => ({
       ...prev,
       image: preset.url,
+      fileName: preset.name,
       title: preset.name,
       category: preset.category,
       ethnicity: preset.ethnicity,
@@ -223,45 +269,114 @@ export default function UploadWizardModal() {
                   Upload High-Definition Artifact Imagery
                 </h3>
                 <p className="text-xs text-[#57534E]">
-                  Photography of your sculpture, woven textiles, cuisine, or painting.
+                  Upload photography of your sculpture, woven textiles, cuisine, or painting from your device.
                 </p>
               </div>
 
-              <div className="border-2 border-dashed border-[#E8E3DA] hover:border-[#C85A32] rounded-2xl p-6 sm:p-8 text-center bg-[#FAF8F5] transition-colors">
+              {/* Hidden file input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*,video/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+
+              {/* Dropzone Container */}
+              <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => !formData.image && fileInputRef.current?.click()}
+                className={`border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center transition-all ${
+                  isDragging 
+                    ? 'border-[#C85A32] bg-[#F7EFE9] scale-[1.01]' 
+                    : 'border-[#E8E3DA] hover:border-[#C85A32] bg-[#FAF8F5]'
+                } ${!formData.image ? 'cursor-pointer' : ''}`}
+              >
                 {formData.image ? (
-                  <div className="relative max-w-sm mx-auto aspect-[4/3] rounded-xl overflow-hidden border border-[#E8E3DA] mb-4 shadow-xs">
-                    <img
-                      src={formData.image}
-                      alt="Preview"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-white text-[10px] text-emerald-700 font-bold border border-[#E8E3DA] shadow-xs">
-                      ✓ Image Verified
+                  <div className="space-y-3">
+                    <div className="relative max-w-sm mx-auto aspect-[4/3] rounded-xl overflow-hidden border border-[#E8E3DA] shadow-xs">
+                      <img
+                        src={formData.image}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute top-2 right-2 px-2.5 py-1 rounded-md bg-white/95 backdrop-blur-xs text-[10px] text-emerald-800 font-bold border border-[#E8E3DA] shadow-xs flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                        <span>Ready for Verification</span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
+                      {formData.fileName && (
+                        <span className="text-xs font-mono text-[#57534E] bg-white px-3 py-1 rounded-lg border border-[#E8E3DA] truncate max-w-xs">
+                          📁 {formData.fileName}
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          fileInputRef.current?.click();
+                        }}
+                        className="px-3.5 py-1.5 rounded-lg bg-white border border-[#E8E3DA] hover:border-[#C85A32] text-xs font-semibold text-[#18181B] transition-colors flex items-center gap-1.5"
+                      >
+                        <ImageIcon className="w-3.5 h-3.5 text-[#C85A32]" />
+                        <span>Choose Another File</span>
+                      </button>
                     </div>
                   </div>
                 ) : (
-                  <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center mx-auto mb-3 text-[#C85A32] border border-[#E8E3DA]">
-                    <Upload className="w-6 h-6" />
+                  <div className="space-y-3">
+                    <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center mx-auto text-[#C85A32] border border-[#E8E3DA] shadow-xs">
+                      <Upload className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-[#18181B]">
+                        Drag and drop your artifact image or video here
+                      </p>
+                      <p className="text-[11px] text-[#78716C] mt-0.5">
+                        Supports JPG, PNG, WEBP, and ProRes Video (up to 150MB)
+                      </p>
+                    </div>
+                    <div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          fileInputRef.current?.click();
+                        }}
+                        className="px-4 py-2 rounded-xl bg-[#C85A32] hover:bg-[#A24220] text-white text-xs font-bold shadow-xs transition-colors inline-flex items-center gap-1.5"
+                      >
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>Choose File from Device</span>
+                      </button>
+                    </div>
                   </div>
                 )}
+              </div>
 
-                <div className="flex flex-col items-center gap-2">
+              {/* Direct URL input fallback */}
+              <div className="p-3.5 rounded-xl bg-white border border-[#E8E3DA] space-y-1.5">
+                <label className="text-[11px] font-semibold text-[#78716C] block">
+                  Or provide a direct image/media URL:
+                </label>
+                <div className="flex gap-2">
                   <input
-                    type="text"
-                    value={formData.image}
-                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    placeholder="Enter image URL or select from cultural presets below..."
-                    className="w-full max-w-md bg-white border border-[#E8E3DA] rounded-xl px-3 py-2 text-xs text-[#18181B] outline-none focus:border-[#C85A32]"
+                    type="url"
+                    value={formData.image.startsWith('data:') ? '' : formData.image}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value, fileName: 'Remote Image' })}
+                    placeholder="https://example.com/artwork.jpg"
+                    className="flex-grow bg-[#FAF8F5] border border-[#E8E3DA] focus:border-[#C85A32] rounded-lg px-3 py-1.5 text-xs text-[#18181B] outline-none"
                   />
-                  <span className="text-[11px] text-[#78716C]">
-                    Supports JPG, PNG, WEBP, ProRes Raw Video (Max 150MB)
-                  </span>
                 </div>
               </div>
 
+              {/* Cultural Presets */}
               <div>
                 <span className="text-xs font-semibold text-[#18181B] block mb-2">
-                  Select an authentic Nigerian preset to test quickly:
+                  Or select an authentic Nigerian preset to test quickly:
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {PRESET_UPLOADS.map((preset, idx) => (
